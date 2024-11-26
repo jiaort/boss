@@ -32,7 +32,6 @@ def http_response(context={}, status_code=None, code=None, msg=None, msg_cn=None
         'timestamp': int(time.time()),
     }
     content_dict.update(context)
-    print(content_dict)
     response_content = json.dumps(content_dict)
 
     content_type = content_type or 'application/json'

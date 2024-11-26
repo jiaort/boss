@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-from utils.logger.logger_setting import LOGGING, LOG_ROOT
+from utils.logger import Logging
+
+Logging()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -43,8 +45,6 @@ INSTALLED_APPS = [
     'bootstrapform',
     'bootstrap_pagination',
     'app.account',
-    'app.applicant',
-    'app.job',
     'app.manager',
     'web',
     'markdown_deux',
@@ -172,18 +172,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # media即为图片上传的根路
 # SESSION_CACHE_ALIAS = "session"
 # AUTH_USER_MODEL = 'account.Account'
 
-# email config
-SEND_MAIL = 'HR_inform@cmgos.com'
-MAIL_HOST = 'mail.cmgos.com'
-MAIL_PWD = 'TSm14O&zsU'
-
 try:
     from boss.local_settings import *
 except ImportError:
     print("Local settings not exists!")
 # cors headers config
 CORS_ORIGIN_ALLOW_ALL = True
-
-for key, handler in LOGGING['handlers'].items():
-    if handler.get('filename', None):
-        handler['filename'] = os.path.join(LOG_ROOT, "logs", os.path.basename(handler['filename']))

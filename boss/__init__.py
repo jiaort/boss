@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
-
 
 import pymysql
 pymysql.version_info = (1, 4, 13, "final", 0)

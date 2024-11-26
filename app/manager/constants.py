@@ -14,8 +14,8 @@ class ContactKind(object):
     Email = 2
 
     CHOICES = (
-        (Mobile, u"手机"),
-        (Email, u"邮箱"),
+        (Mobile, "手机"),
+        (Email, "邮箱"),
     )
 
 
@@ -41,8 +41,8 @@ class AccountPosition(object):
     Employee = 10
 
     CHOICES = (
-        (Creator, u"创建者"),
-        (Employee, u"员工"),
+        (Creator, "创建者"),
+        (Employee, "员工"),
     )
 
 
@@ -52,9 +52,9 @@ class PermissionType(object):
     NOT_OPEN = 3
 
     CHOICES = (
-        (ALL, u"所有权限"),
-        (PART, u"部分权限"),
-        (NOT_OPEN, u"不开放"),
+        (ALL, "所有权限"),
+        (PART, "部分权限"),
+        (NOT_OPEN, "不开放"),
     )
 
 
@@ -63,6 +63,6 @@ class GenderType(object):
     FEMALE = 2
 
     CHOICES = (
-        (MALE, u"男"),
-        (FEMALE, u"女"),
+        (MALE, "男"),
+        (FEMALE, "女"),
     )

@@ -7,8 +7,9 @@ django-markdown-deux==1.0.5
 markdown2==2.3.10
 python-docx==0.8.10
 lxml==4.6.2
-# mysqlclient==1.4.6
-# pymysql==0.10.1
-gunicorn[gevent]==20.0.4
+mysqlclient==1.4.6
+pymysql==0.10.1
+uvicorn==0.22.0
 django-cors-headers==3.10.1
 cryptography==42.0.2
+loguru==0.7.2

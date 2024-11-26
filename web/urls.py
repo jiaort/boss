@@ -8,11 +8,6 @@ from web.manager import views
 
 urlpatterns = [
     url(r'manager/', include('web.manager.urls')),
-    url(r'account/', include('web.account.urls')),
-    url(r'document/', include('web.document.urls')),
-    url(r'duty/', include('web.duty.urls')),
-    url(r'job/', include('web.job.urls')),
-    url(r'applicant/', include('web.applicant.urls')),
 
     url(r'about$', views.about_view, name='about'),
     url(r'^$', views.overview_view, name='overview'),

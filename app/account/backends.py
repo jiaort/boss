@@ -50,5 +50,3 @@ def wx_code_login(request, code=""):
     else:
         # 返回错误
         return None, oauth_client.error or ERRORCODE.PROVIDER_PLATFORM_ERROR
-
-

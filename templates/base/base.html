@@ -77,7 +77,7 @@
       {% endfor %}
       $('#jobDropdown').on('show.bs.dropdown', function () {
          $.ajax({
-             url: "{% url 'unread_count' %}",
+             url: "#",
              type: "GET",
              success: function (data) {
                  if (data.code == ERROR_CODE.SUCCESS) {

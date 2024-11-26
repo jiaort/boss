@@ -1,5 +1,3 @@
-# -* coding:utf-8 -*-
-
 from functools import wraps
 from datetime import datetime
 
@@ -9,11 +7,11 @@ from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.urls import reverse
+from loguru import logger
 
 from utils.response import http_response
 from utils.errorcode import ERRORCODE
-from utils.logger.syslogger import SysLogger
-
+from app.account.constants import USER_INFO_COOKIE_KEY
 from app.manager.constants import MANAGER_INFO_COOKIE_KEY
 from app.manager.models import Manager
 
@@ -78,7 +76,7 @@ def login_check():
                     setattr(request, MANAGER_INFO_COOKIE_KEY, manager_info)
                     return view_func(request, *args, **kwargs)
             except Exception as ex:
-                SysLogger.exception(ex, request)
+                logger.error(ex, request)
 
             return HttpResponseRedirect(reverse('sso_login'))
 
@@ -104,7 +102,7 @@ def login_check_ajax():
                     setattr(request, MANAGER_INFO_COOKIE_KEY, manager_info)
                     return view_func(request, *args, **kwargs)
             except Exception as ex:
-                SysLogger.exception(ex, request)
+                logger.error(ex, request)
 
             return http_response(request, status_code=status_code)
 

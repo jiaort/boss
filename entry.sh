@@ -1,4 +1,4 @@
 #!/bin/bash
 
 python3 manage.py migrate&&
-gunicorn boss.wsgi -c gunicorn.py
+uvicorn boss.asgi:application --host 0.0.0.0 --port 8000 --lifespan off

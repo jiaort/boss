@@ -30,8 +30,7 @@ dcker-compose build && docker-compose up -d
 ```
 #### 创建用户
 ```shell
-docker-compose exec boss bash
-python manager.py create_manager
+docker-compose exec boss python manage.py create_manager
 ```
 访问服务
 ```shell

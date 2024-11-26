@@ -1,4 +1,4 @@
-FROM python:3.9.7-slim
+FROM crpi-jj52mi82jv24gtu4.cn-hangzhou.personal.cr.aliyuncs.com/heavycross/python:3.7.5-slim
 
 WORKDIR /app
 

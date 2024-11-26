@@ -10,10 +10,6 @@ DATABASES = {
     }
 }
 
-SEND_MAIL = '18510342254@163.com'
-MAIL_HOST = 'smtp.163.com'
-MAIL_PWD = 'USIAHLOEWGAOUZXC'
-
 from boss.settings import INSTALLED_APPS, MIDDLEWARE
 # 跨域
 INSTALLED_APPS += ['corsheaders']  # 导入pip install django-cors-headers

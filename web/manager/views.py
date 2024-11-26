@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 from datetime import datetime
 from django.conf import settings
 from django.db.models import Count
@@ -7,14 +5,9 @@ from django.urls import reverse
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib.auth import logout
 
-from app.applicant.constants import Status
-from app.job.constants import ApplicantType, FunctionType
 from utils.response import http_response
 from utils.errorcode import ERRORCODE
 
-from app.job.models import Job
-from app.applicant.models import Applicant
-from app.account.models import Resume
 from app.manager.constants import MANAGER_INFO_COOKIE_KEY
 from app.manager.models import Manager
 
@@ -24,58 +17,16 @@ from web.manager.backend import do_login
 
 @login_check()
 def overview_view(request):
-    job_count = Job.objects.all().count()
-    applicant_count = Applicant.objects.all().count()
-    today_applicant_count = Applicant.objects.filter(created_time__gte=datetime.today().date()).count()
-    resume_count = Resume.objects.all().count()
-    status_annotate = Applicant.objects.values("status").annotate(Count("id"))
-    status_titles, status_counts = [], []
-    for status in status_annotate:
-        status_title = Status.DICT.get(status["status"])
-        status_count = status["id__count"]
-        status_titles.append(status_title)
-        status_counts.append(status_count)
-
-    campus_annotate = Applicant.objects.filter(job__applicant_type=ApplicantType.Campus).values("job__function_type").annotate(Count("id"))
-    social_annotate = Applicant.objects.filter(job__applicant_type=ApplicantType.Social).values("job__function_type").annotate(Count("id"))
-    campus_counts, social_counts = [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]
-    for campus in campus_annotate:
-        if campus["job__function_type"] == FunctionType.Tech:
-            campus_counts[0] = campus["id__count"]
-        elif campus["job__function_type"] == FunctionType.Function:
-            campus_counts[1] = campus["id__count"]
-        elif campus["job__function_type"] == FunctionType.Sales:
-            campus_counts[2] = campus["id__count"]
-        elif campus["job__function_type"] == FunctionType.Product:
-            campus_counts[3] = campus["id__count"]
-        elif campus["job__function_type"] == FunctionType.Operation:
-            campus_counts[4] = campus["id__count"]
-        elif campus["job__function_type"] == FunctionType.Other:
-            campus_counts[5] = campus["id__count"]
-    for social in social_annotate:
-        print(social["job__function_type"])
-        if social["job__function_type"] == FunctionType.Tech:
-            social_counts[0] = social["id__count"]
-        elif social["job__function_type"] == FunctionType.Function:
-            social_counts[1] = social["id__count"]
-        elif social["job__function_type"] == FunctionType.Sales:
-            social_counts[2] = social["id__count"]
-        elif social["job__function_type"] == FunctionType.Product:
-            social_counts[3] = social["id__count"]
-        elif social["job__function_type"] == FunctionType.Operation:
-            social_counts[4] = social["id__count"]
-        elif social["job__function_type"] == FunctionType.Other:
-            social_counts[5] = social["id__count"]
     data = {
         'active_classes': ['.home-menu'],
-        'job_count': job_count,
-        'applicant_count': applicant_count,
-        'today_applicant_count': today_applicant_count,
-        'resume_count': resume_count,
-        'status_titles': status_titles,
-        'status_counts': status_counts,
-        'campus_counts': campus_counts,
-        'social_counts': social_counts,
+        'job_count': 1,
+        'applicant_count': 2,
+        'today_applicant_count': 2,
+        'resume_count': 2,
+        'status_titles': "dddd",
+        'status_counts': 2,
+        'campus_counts': 2,
+        'social_counts': 21,
     }
     return render_admin(request, 'manager/home.html', data)
 

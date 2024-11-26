@@ -7,9 +7,9 @@ class GenderType(object):
     Female = 2
 
     CHOICES = (
-        (Unknown, u"未知"),
-        (Male, u"男"),
-        (Female, u"女"),
+        (Unknown, "未知"),
+        (Male, "男"),
+        (Female, "女"),
     )
 
 
