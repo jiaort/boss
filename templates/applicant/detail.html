@@ -1,0 +1,197 @@
+{% extends "base/base.html" %}
+{% load bootstrap_pagination %}
+{% load web_tags %}
+{% block title %}
+  <title>applicant</title>
+{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h1><span class="text-muted font-weight-light"><i class="page-header-icon ion-ios-keypad"></i>应聘信息 / </span>应聘详情
+    </h1>
+  </div>
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a href="#tabs-home" data-toggle="tab">中文简历</a>
+      </li>
+      <li>
+        <a href="#tabs-profile" data-toggle="tab">简历原文</a>
+      </li>
+    </ul>
+    <div class="col-md-8">
+      <div class="tab-content">
+        <div class="tab-pane fade in active" id="tabs-home">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="panel bg-transparent">
+                <div class="panel-title"><strong>基本信息</strong></div>
+                <hr class="m-y-0">
+                <div class="panel-body">
+                  <div class="panel-group">
+                    <label class="col-md-3 control-label">姓名</label>
+                    <div class="col-md-9">
+                      <p>{{ name }}</p>
+                    </div>
+                  </div>
+                  <div class="panel-group">
+                    <label class="col-md-3 control-label">邮箱</label>
+                    <div class="col-md-9">
+                      <p>{{ email }}</p>
+                    </div>
+                  </div>
+                  <div class="panel-group">
+                    <label class="col-md-3 control-label">电话</label>
+                    <div class="col-md-9">
+                      <p>{{ mobile }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="panel bg-transparent">
+                <div class="panel-title"><strong>教育经历</strong></div>
+                <hr class="m-y-0">
+                <div class="panel-body">
+                  <div class="panel-group">
+                    <label class="col-md-3 control-label">最高学历</label>
+                    <div class="col-md-9">
+                      <p>{{ education }}</p>
+                    </div>
+                  </div>
+                  <div class="panel-group">
+                    <label class="col-md-3 control-label">毕业院校</label>
+                    <div class="col-md-9">
+                      <p>{{ school }}</p>
+                    </div>
+                  </div>
+                  <div class="panel-group">
+                    <label class="col-md-3 control-label">所学专业</label>
+                    <div class="col-md-9">
+                      <p>{{ profession }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="panel bg-transparent">
+                <div class="panel-title"><strong>工作经历</strong></div>
+                <hr class="m-y-0">
+                <div class="panel-body">
+                  <div class="panel-group">
+                    <label class="col-md-3 control-label">当前公司</label>
+                    <div class="col-md-9">
+                      <p>{{ company }}</p>
+                    </div>
+                  </div>
+                  <div class="panel-group">
+                    <label class="col-md-3 control-label">当前职位</label>
+                    <div class="col-md-9">
+                      <p>{{ position }}</p>
+                    </div>
+                  </div>
+                  <div class="panel-group">
+                    <label class="col-md-3 control-label">总工作年限</label>
+                    <div class="col-md-9">
+                      <p>{{ experience }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="tabs-profile">
+          {% for item in applicant_list %}
+            <div class="row">
+              <div class="col-md-12">
+                <div class="panel bg-transparent">
+                  <div class="panel-title">
+                    <strong>{{ item|file_name }}</strong>
+                  <div class="panel-heading-controls">
+                    <a type="button" class="btn btn-link" href="{{ MEDIA_URL }}{{ item }}" download="">导出简历</a>
+                  </div>
+                  </div>
+
+                  <hr class="m-y-0">
+                  <div class="panel-body">
+                    {% if item|suffix_available %}
+{#                      <p>无法预览word格式</p>#}
+                      <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=https://{{ request.get_host }}{{ MEDIA_URL }}{{ item }}" style="width: 100%;height: 70vh;border-width:0px;"></iframe>
+                    {% else %}
+                      <iframe src="{{ MEDIA_URL }}{{ item|safe }}" style="width: 100%;height: 70vh;border-width:0px;"></iframe>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="tab-content">
+        <div class="col-md-12">
+        <div class="panel bg-transparent">
+          <div class="panel-title">
+            <strong>操作</strong>
+            <div class="panel-heading-controls">
+              <label class="label label-tag {% if status == 0 %}label-primary{% elif status == 1 %}label-success{% elif status == 2 %}label-danger{% elif status == 3 %}label-warning{% endif %}">{{ status_display }}</label>
+            </div>
+          </div>
+          <hr class="m-y-0">
+          <div class="panel-body">
+            <a type="button" onclick="change_status({{ a_id }}, 0)" class="btn btn-lg btn-primary btn-block">待处理</a>
+            <a type="button" onclick="change_status({{ a_id }}, 3)" class="btn btn-lg btn-warning btn-block">待定</a>
+            <a type="button" onclick="change_status({{ a_id }}, 1)" class="btn btn-lg btn-success btn-block">合适</a>
+            <a type="button" onclick="change_status({{ a_id }}, 2)" class="btn btn-lg btn-danger btn-block">不合适</a>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+  <br>
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+
+function change_status(applicant_id, status) {
+    bootbox.confirm({
+      message: '确定执行此操作?',
+      className: 'bootbox-sm',
+
+      callback: function (result) {
+          if (result) {
+              $.ajax({
+                  url: "{% url 'change_applicant_status' %}",
+                  type: "POST",
+                  data: {
+                  applicant_id: applicant_id,
+                  status: status,
+                  },
+                  success: function (data) {
+                      if (data.code == ERROR_CODE.SUCCESS) {
+                          window.location.href = "{% url 'applicant_detail' a_id %}";
+                      } else if (data.code == ERROR_CODE.NOT_LOGIN) {
+                          window.location.href = "{% url 'sso_login' %}";
+                      } else {
+                          msg_info(data.msg_cn, 'danger');
+                      }
+                  }
+            });
+          }
+      },
+  });
+}
+</script>
+{% endblock %}

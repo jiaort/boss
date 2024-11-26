@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.ico" />
+
+  {% block title %}
+  {% endblock %}
+
+  {% include "base/css.html" %}
+  {% block headCss %}
+  {% endblock %}
+
+  {% include "base/js.html" %}
+  {% block headScrpte %}
+  {% endblock %}
+
+  {% block style %}
+  {% endblock %}
+</head>
+<body>
+  <!-- Nav -->
+  {% include "base/menu.html" %}
+
+  <!-- Navbar -->
+  {% include "base/top.html" %}
+
+  <div class="px-content">
+    <div class="show-message"></div>
+    {% block message %}
+      <div id="growls" class="default">
+      {% for message in messages %}
+        <div class="growl growl-error growl-medium msg-fadeout">
+          <div class="growl-close">×</div>
+          <div class="growl-title">Notice!</div>
+          <div class="growl-message">{{ message|safe }}</div>
+        </div>
+      {% endfor %}
+      </div>
+    {% endblock %}
+
+    <!-- Content -->
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  <!-- Footer -->
+  {% include "base/footer.html" %}
+
+  <!-- ==============================================================================
+  |
+  |  SCRIPTS
+  |
+  =============================================================================== -->
+  <!-- Load jQuery -->
+  <script src="/static/js/jquery-3.2.1.min.js"></script>
+
+  <!-- Core scripts -->
+  <script src="/static/js/bootstrap.min.js"></script>
+  <script src="/static/js/pixeladmin.min.js"></script>
+
+  <!-- Your scripts -->
+  <script src="/static/js/app.js"></script>
+
+  <script src="/static/js/main.js?ver=1514974163"></script>
+
+  <script type="text/javascript">
+    $(function(){
+      {% for class in active_classes %}
+        $("{{ class | safe }}").addClass('active');
+      {% endfor %}
+      {% for class in open_classes %}
+        $("{{ class | safe }}").addClass('px-open');
+      {% endfor %}
+      $('#jobDropdown').on('show.bs.dropdown', function () {
+         $.ajax({
+             url: "{% url 'unread_count' %}",
+             type: "GET",
+             success: function (data) {
+                 if (data.code == ERROR_CODE.SUCCESS) {
+                     if (data.unread > 0) {
+                         $("#messageCount").removeClass("hidden")
+                         $("#messageCount").text(data.unread)
+                     }
+                 } else if (data.code == ERROR_CODE.NOT_LOGIN) {
+                    window.location.href = "{% url 'sso_login' %}";
+                 } else {
+                 }
+             }
+         })
+      });
+    });
+  </script>
+
+  {% block script %}
+  {% endblock %}
+</body>
+</html>

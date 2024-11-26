@@ -1,0 +1,131 @@
+{% extends "base/base.html" %}
+
+{% block title %}
+  <title>Home</title>
+{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h1><span class="text-muted font-weight-light"><i class="page-header-icon ion-stats-bars"></i>首页 / </span>统计</h1>
+  </div>
+  <div class="row">
+    <!-- Stats -->
+    <div class="col-md-3">
+      <a href="{% url 'job_list' %}">
+        <div class="box bg-info darken">
+          <div class="box-cell p-x-3 p-y-1">
+            <div class="font-weight-semibold font-size-12">职位数</div>
+            <div class="font-weight-bold font-size-20">{{ job_count }}</div>
+            <i class="box-bg-icon middle right font-size-52 ion-cube"></i>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-3">
+      <a href="{% url 'applicant_list' %}">
+        <div class="box bg-danger darken">
+          <div class="box-cell p-x-3 p-y-1">
+            <div class="font-weight-semibold font-size-12">应聘数</div>
+            <div class="font-weight-bold font-size-20">{{ applicant_count }}</div>
+            <i class="box-bg-icon middle right font-size-52 ion-ios-people"></i>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-3">
+      <a href="{% url 'applicant_list' %}">
+        <div class="box bg-warning darken">
+          <div class="box-cell p-x-3 p-y-1">
+            <div class="font-weight-semibold font-size-12">今日应聘数</div>
+            <div class="font-weight-bold font-size-20">{{ today_applicant_count }}</div>
+            <i class="box-bg-icon middle right font-size-52 ion-ios-people"></i>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-3">
+      <a href="{% url 'resume_list' %}">
+        <div class="box bg-success darken">
+          <div class="box-cell p-x-3 p-y-1">
+            <div class="font-weight-semibold font-size-12">简历数</div>
+            <div class="font-weight-bold font-size-20">{{ resume_count }}</div>
+            <i class="box-bg-icon middle right font-size-52 ion-ios-paper"></i>
+          </div>
+        </div>
+      </a>
+    </div>
+    <!-- / Stats -->
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel">
+        <div class="panel-title">简历投递情况</div>
+        <hr>
+
+        <div class="panel-body">
+          <canvas id="chart-type"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="panel">
+        <div class="panel-title">简历处理情况</div>
+        <hr>
+
+        <div class="panel-body">
+          <canvas id="chart-status"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+
+$(function() {
+  let data = {
+    labels: ['技术类', '职能类', '销售类', '产品类', '运营类', '其他'],
+    datasets: [{
+      label:           '社会招聘',
+      data:            {{ social_counts|safe }},
+      borderWidth:     1,
+      backgroundColor: '#4BC0C0',
+      borderColor:     '#4BC0C0',
+    }, {
+      label:           '校园招聘',
+      data:            {{ campus_counts|safe }},
+      borderWidth:     1,
+      backgroundColor: '#FFCE56',
+      borderColor:     '#FFCE56',
+    }],
+  };
+
+  new Chart(document.getElementById('chart-type').getContext("2d"), {
+    type: 'bar',
+    data: data,
+  });
+});
+
+$(function() {
+  let data = {
+    datasets: [{
+      data: {{ status_counts|safe }},
+      backgroundColor: ['#FF6384', '#4BC0C0', '#FFCE56', '#E7E9ED'],
+      hoverBackgroundColor: ['#FF6384', '#4BC0C0', '#FFCE56', '#E7E9ED'],
+    }],
+    labels: {{ status_titles|safe }}
+  };
+
+  new Chart(document.getElementById('chart-status').getContext("2d"), {
+    type: 'doughnut',
+    data: data,
+  });
+});
+</script>
+{% endblock %}

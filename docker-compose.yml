@@ -1,0 +1,34 @@
+version: '2.3'
+services:
+  boss:
+    image: boss:dev
+    build:
+      context: .
+      dockerfile: release/boss.Dockerfile
+    restart: always
+    volumes:
+      - ./logs:/app/logs
+    environment:
+      - TZ=Asia/Shanghai
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:dev
+    build:
+      context: .
+      dockerfile: release/mysql.Dockerfile
+    restart: always
+    ports:
+      - "3308:3306"
+    environment:
+      - TZ=Asia/Shanghai
+  nginx:
+    restart: always
+    image: nginx:dev
+    build:
+      context: .
+      dockerfile: release/nginx.Dockerfile
+    ports:
+      - "8000:80"
+    depends_on:
+      - boss

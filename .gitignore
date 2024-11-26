@@ -1,0 +1,14 @@
+*.pyc
+*.log
+local_settings.py
+logs/*
+!logs/empty
+.coverage
+*.pid
+*.egg-info/
+*.sqlite3
+*db.sqlite3
+templates/contract/*.html
+data/contract/*.pdf
+*.swp
+.idea/*

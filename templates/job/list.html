@@ -1,0 +1,179 @@
+{% extends 'base/base.html' %}
+{% load bootstrap_pagination %}
+
+{% block title %}
+  <title>Job</title>
+{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h1><span class="text-muted font-weight-light"><i class="page-header-icon ion-ios-keypad"></i>职位信息 / </span>职位列表
+    </h1>
+  </div>
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs nav-tabs-simple">
+      <li class="all">
+        <a href="{% url 'job_list' %}">全部状态&nbsp;&nbsp;
+          <label style="color:gray;">{{ job_status_count.0 }}</label>
+        </a>
+      </li>
+      <li class="processing">
+        <a href="{% url 'job_list' %}?status=1">进行中&nbsp;&nbsp;
+          <label style="color:blue;">{{ job_status_count.1 }}</label>
+        </a>
+      </li>
+      <li class="paused">
+        <a href="{% url 'job_list' %}?status=2">已暂停&nbsp;&nbsp;
+          <label style="color:green;">{{ job_status_count.2 }}</label>
+        </a>
+      </li>
+      <li class="completed">
+        <a href="{% url 'job_list' %}?status=3">已完成&nbsp;&nbsp;
+          <label style="color:red;">{{ job_status_count.3 }}</label>
+        </a>
+      </li>
+      <li class="cancelled">
+        <a href="{% url 'job_list' %}?status=4">已取消&nbsp;&nbsp;
+          <label style="color:orange;">{{ job_status_count.4 }}</label>
+        </a>
+      </li>
+    </ul>
+  </div>
+  </br>
+  <div class="box-header">
+    <form class="form-inline" action="">
+      <div>
+        <input name="job_title" class="form-control" placeholder="职位名称" value="{{ form.cleaned_data.job_title }}">
+        <select name="function_type" class="form-control salary" data-allow-clear="true">
+          <option value="">全部</option>
+          {% for item in function_type_option %}
+            <option value={{ item.0 }} {% if item.0 == form.cleaned_data.function_type %}selected{% endif %}>{{ item.1 }}</option>
+          {% endfor %}
+        </select>
+{#        <select name="status" class="form-control status" data-allow-clear="true">#}
+{#          <option value="">全部</option>#}
+{#          {% for item in job_status_option %}#}
+{#            <option value={{ item.0 }} {% if item.0 == form.cleaned_data.status %}selected{% endif %}>{{ item.1 }}</option>#}
+{#          {% endfor %}#}
+{#        </select>#}
+        <select name="publish" class="form-control status" data-allow-clear="true">
+          <option value="">全部</option>
+          {% for item in publish_status_option %}
+            <option value={{ item.0 }} {% if item.0 == form.cleaned_data.publish %}selected{% endif %}>{{ item.1 }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">查询</button>&nbsp;&nbsp;共{{ total }}条记录
+        <a href="{% url 'job_new_view' %}" class="btn btn-danger btn-primary pull-md-right">新建职位</a>
+      </div>
+    </form>
+  </div>
+  </br>
+
+  <div class="table-light">
+    <table class="table table-bordered">
+      <thead>
+      <th>职位名称</th>
+      <th>职能类型</th>
+      <th>招聘类型</th>
+      <th>工作地点</th>
+{#      <th>负责人</th>#}
+      <th>更新日期</th>
+      <th>创建日期</th>
+      <th>简历</th>
+{#      <th>发布渠道</th>#}
+      <th id='status_sort' class="{% if form.cleaned_data.status_order == 1 %}sorting_asc{% elif form.cleaned_data.status_order == 2 %}sorting_desc{% else %}sorting{% endif %}">状态</th>
+      <th id='publish_sort' class="{% if form.cleaned_data.publish_order == 1 %}sorting_asc{% elif form.cleaned_data.publish_order == 2 %}sorting_desc{% else %}sorting{% endif %}">发布</th>
+      <th class=>操作</th>
+      </thead>
+      <tbody>
+      {% for item in job_list %}
+        <tr class="odd gradeX">
+          <td>{{ item.job_title }}</td>
+          <td>{{ item.function_type }}</td>
+          <td>{{ item.applicant_type }}</td>
+          <td>{{ item.work_place }}</td>
+{#          <td>{{ item.owner_name | default:"马瑞阳" }}</td>#}
+          <td><a data-toggle="tooltip" data-state="info" data-placement="bottom" title data-original-title="{{ item.created_time| date:"Y-m-d H:m" }}">{{ item.created_time| date:"Y-m-d" }}</a></td>
+          <td><a data-toggle="tooltip" data-state="info" data-placement="bottom" title data-original-title="{{ item.last_update| date:"Y-m-d H:m" }}">{{ item.last_update| date:"Y-m-d" }}</a></td>
+          <td><a href="{% url 'applicant_list' %}?job_title={{ item.job_title }}">{{ item.count }}</a></td>
+{#          <td>{{ item.channel }}</td>#}
+          <td><label class="label label-tag {% if item.status == '进行中' %}label-success{% elif item.status == '已暂停' %}label-danger{% elif item.status == '已完成' %}label-primary{% elif item.status == '已取消' %}label-warning{% endif %}">{{ item.status }}</label></td>
+          <td><label class="label label-tag {% if item.publish == '已发布' %}label-success{% else %}label-danger{% endif %}">{{ item.publish }}</label></td>
+          <td>
+            <a href="{% url 'job_view' item.id %}" class="btn btn-xs btn-danger btn-outline btn-rounded">编辑</a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <div class="table-footer clearfix">
+      <div class="DT-label">
+        <div class="dataTables_info" id="jq-datatables-example_info" role="alert" aria-live="polite" aria-relevant="all">
+          共 {{total}} 条
+        </div>
+      </div>
+      <div class="DT-pagination">
+        <div class="dataTables_paginate paging_simple_numbers" id="jq-datatables-example_paginate">
+          {% bootstrap_paginate job_list url_extra_args=params range=10 show_first_last="true" %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block script %}
+  <script>
+    // -------------------------------------------------------------------------
+    // Initialize DEMO sidebar
+
+    $(function () {
+      pxDemo.initializeDemoSidebar();
+
+      $('#px-demo-sidebar').pxSidebar();
+      pxDemo.initializeDemo();
+
+      $('[data-toggle="tooltip"]').tooltip();
+
+      let status = getUrlParam("status");
+      if(status == 1){
+        $(".processing").addClass("active");  // 待处理
+      }else if(status == 2){
+        $(".paused").addClass("active");  // 合适
+      }else if(status == 3){
+        $(".completed").addClass("active"); // 不合适
+      }else if(status == 4){
+        $(".cancelled").addClass("active"); // 待定
+      }else{
+        $(".all").addClass("active"); // 全部状态
+      }
+
+    });
+  </script>
+  <script type="text/javascript">
+    $('#status_sort').click(function () {
+      if ($('#status_sort').attr('class') == 'sorting_asc') {
+        $('#status_sort').attr('class', 'sorting_desc');
+        window.location.href = setParam('status_order', 2);
+      } else if ($('#status_sort').attr('class') == 'sorting_desc') {
+        $('#status_sort').attr('class', 'sorting');
+        window.location.href = setParam('status_order', 0);
+      } else {
+        $('#status_sort').attr('class', 'sorting_asc');
+        window.location.href = setParam('status_order', 1);
+      }
+    });
+
+    $('#publish_sort').click(function () {
+      if ($('#publish_sort').attr('class') == 'sorting_asc') {
+        $('#publish_sort').attr('class', 'sorting_desc');
+        window.location.href = setParam('publish_order', 2);
+      } else if ($('#publish_sort').attr('class') == 'sorting_desc') {
+        $('#publish_sort').attr('class', 'sorting');
+        window.location.href = setParam('publish_order', 0);
+      } else {
+        $('#publish_sort').attr('class', 'sorting_asc');
+        window.location.href = setParam('publish_order', 1);
+      }
+    });
+  </script>
+{% endblock %}
