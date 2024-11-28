@@ -1,52 +1,30 @@
-import string
-from random import choice
-
-from django.contrib.auth import login
-from app.account.constants import GenderType
 from app.account.models import Account
-from app.account.auth.client import WeiXinOauth
-from config.oauth_client import OauthConfig
-from utils.errorcode import ERRORCODE
+from utils.request_client import RequestClient
 
 
-def gen_secret_key(length=40):
-    KEY_CHARACTERS = string.ascii_letters + string.digits
-    return ''.join([choice(KEY_CHARACTERS) for _ in range(length)])
-
-
-def easy_gen_nickname(nickname=""):
-    if not nickname:
-        nickname = gen_secret_key(6)
-
-    return nickname
-
-
-def wx_code_login(request, code=""):
+def wx_code_login(code):
     """第三方登录
 
     code -- 微信授权code
     return -- User, STATUS_CODE"""
-    oauth_client = WeiXinOauth(code=code)
-    oauth_client.get_openid()
-    user_info = {"openid": oauth_client.user_id}
+    params = {
+        "appid": "wx26dd37776ee9f17f",
+        "secret": "b00201d207b57c4885fbb137301a50e5",
+        "grant_type": "authorization_code",
+        "code": code,
+    }
+    resp = RequestClient.query(url="https://api.weixin.qq.com/sns/jscode2session", method="GET", params=params)
 
-    if user_info and oauth_client.user_id:
+    if not resp or resp.status_code != 200:
+        return None
+    data = resp.json()
+    openid = data.get("openid")
+    if not openid:
+        return None
 
-        nickname = easy_gen_nickname(nickname=user_info.get("nickname", ""))
-        user = Account.objects.filter(auth_id=oauth_client.user_id).first()
-
-        if not user:
-            user = Account.objects.create(
-                nickname=nickname,
-                gender=user_info.get("gender") or GenderType.Unknown,
-                avatar=user_info.get("avatar") or "",
-                auth_id=oauth_client.user_id,
-                app_id=OauthConfig.get(OauthConfig.WeiXinWeb)['key'],
-                auth_token=oauth_client.token or "",
-            )
-
-        login(request, user)
-        return user, ERRORCODE.SUCCESS
-    else:
-        # 返回错误
-        return None, oauth_client.error or ERRORCODE.PROVIDER_PLATFORM_ERROR
+    user = Account.objects.filter(auth_id=openid).first()
+    if not user:
+        user = Account.objects.create(
+            auth_id=openid,
+        )
+    return user
