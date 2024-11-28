@@ -6,7 +6,7 @@ from app.account import views
 
 
 urlpatterns = [
-    # 认证
-    url(r'^callback-weixin/?$', views.callback_weixin_view),
-    url(r'^get-sign-info/?$', views.get_sign_info_view),
+    url(r'^login/?$', views.login_view),
+    url(r'^user_info/?$', views.user_info_view),
+    url(r'^convert/?$', views.convert_view),
 ]

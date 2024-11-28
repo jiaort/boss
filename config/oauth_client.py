@@ -7,12 +7,13 @@ class OauthConfig(object):
     DICT = [
         {
             "id": WeiXinWeb,
-            "key": "wx96ec9d191e5fed95",
-            "secret": "377ea2069d3a6eaf6fbcae6d71d6891b",
+            "key": "wx26dd37776ee9f17f",
+            "secret": "b00201d207b57c4885fbb137301a50e5",
             "callback": "",
             "authorize": "",
             "third_token": "https://api.weixin.qq.com/sns/oauth2/component/access_token",
             "token": "https://api.weixin.qq.com/sns/oauth2/access_token",
+            "silent_token": "https://api.weixin.qq.com/sns/jscode2session",
             "easy_token": "https://api.weixin.qq.com/cgi-bin/token",
             "get_id": "",
             "get_user_info": "https://api.weixin.qq.com/sns/userinfo",
